@@ -1,0 +1,21 @@
+{
+    "name": "josephnc/phpfuncs",
+    "description": "PHP user defined functions for quick use.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "JosephNC",
+            "email": "chukwudinwakpaka@hotmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "JosephNC\\PHPFuncs\\" : "src"
+        },
+        "files": ["src/phpfuncs.php"]
+    },
+    "require": {
+        "php": ">=5.6.0"
+    }
+}
