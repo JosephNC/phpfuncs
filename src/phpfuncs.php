@@ -10,6 +10,8 @@ namespace JosephNC\PHPFuncs;
 * @param boolean $complete Whether to return the full time ago. Default is false.
 * @param boolean $past Whether to return time ago or remaining time. Default is true.
 * 
+* @return string    The time difference
+* 
 * @since 1.0
 */
 function time_difference( $time_1, $time_2, $complete = false, $past = true )
@@ -54,6 +56,8 @@ function time_difference( $time_1, $time_2, $complete = false, $past = true )
 
 /**
 * Get IP Address
+* 
+* @return string|void   IP Address if found and void otherwise
 */
 function real_ip()
 {
@@ -97,6 +101,8 @@ function real_ip()
 * 
 * @param array $array1
 * @param array $array2
+* 
+* @return boolean   true if equal and false otherwise
 */
 function is_array_equal( $array1, $array2 )
 {
@@ -106,4 +112,43 @@ function is_array_equal( $array1, $array2 )
         return true;
     else
         return false;
+}
+
+/**
+ * Handles PHP start session
+ * @return boolean|void
+ */
+function start_session()
+{
+    if (php_sapi_name() === 'cli') return false;
+
+    if (version_compare(phpversion(), '5.4.0', '>='))
+        $started = session_status() === PHP_SESSION_ACTIVE ? true : false;
+    else
+        // This will eventually not run,
+        // because the library requires PHP >= 5.6
+        $started = session_id() === '' ? false : true; 
+
+    if ($started === false) {
+        ob_start();
+        session_start();
+    }
+}
+
+/**
+* Create random string
+*
+* @param int $length The length of string to get. Default is 20
+* @return string    The string generated.
+*/
+function get_random_string( $length = 20 )
+{
+    $chars = '56789abcdefghijklmABCDEFGHIJKLM01234nopqrstuvwxyzNOPQRSTUVWXYZ';
+
+    $s = '';
+
+    for ( $i = 0; $i < $length; $i++ )
+        $s .= $chars[rand( 0, strlen( $chars ) - 1 )];
+
+    return $s;
 }
