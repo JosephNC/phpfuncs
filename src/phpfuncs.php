@@ -468,3 +468,35 @@ function money_form($number, $code = 'usd', $symbol = false, $position = 'left_s
 
     return $money;
 }
+
+/**
+ * Converts a HEX value to RGB.
+ *
+ * @since 1.0
+ *
+ * @param string $hex The 3- or 6-digit hexadecimal value.
+ * @param int $opacity The opacity to use for alpha. Default is 1
+ * @return string String containing RGBA (red, green, blue and alpha) values for the given
+ *               HEX code, original hex value otherwise.
+ */
+function hex2rgb( $hex, $opacity = 1 )
+{
+    if ( ! is_numeric( $opacity ) ) return $hex;
+
+    $hex        = str_replace( '#', '', $hex );
+    $opacity    = ( $opacity > 1 ) ? 1 : ( ( $opacity < 0 ) ? 0 : $opacity );
+
+    if ( strlen( $hex ) === 3 ) {
+        $r = hexdec( substr( $hex, 0, 1 ) . substr( $hex, 0, 1 ) );
+        $g = hexdec( substr( $hex, 1, 1 ) . substr( $hex, 1, 1 ) );
+        $b = hexdec( substr( $hex, 2, 1 ) . substr( $hex, 2, 1 ) );
+    } elseif ( strlen( $hex ) === 6 ) {
+        $r = hexdec( substr( $hex, 0, 2 ) );
+        $g = hexdec( substr( $hex, 2, 2 ) );
+        $b = hexdec( substr( $hex, 4, 2 ) );
+    } else {
+        return $hex;
+    }
+
+    return "rgba( $r, $g, $b, $opacity )";
+}
