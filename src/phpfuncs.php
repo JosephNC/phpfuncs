@@ -39,9 +39,9 @@ function time_difference( $time_1, $time_2, $complete = false, $past = true )
     foreach ( $args as $key => &$value ) {
 
         if ( $diff->$key )
-        	$value = $diff->$key . ' ' . $value . ( $diff->$key > 1 ? 's' : '' );
+            $value = $diff->$key . ' ' . $value . ( $diff->$key > 1 ? 's' : '' );
         else
-        	unset( $args[$key] );
+            unset( $args[$key] );
     }
 
     if ( ! $complete ) $args = array_slice( $args, 0, 1 );
@@ -107,11 +107,46 @@ function real_ip()
 function is_array_equal( $array1, $array2 )
 {
     if ( ! is_array( $array1 ) || ! is_array( $array2 ) ) return false;
+    if ( empty( $array1 ) && empty( $array2 ) ) return true;
+    if ( ( empty( $array1 ) && ! empty( $array2 ) ) || ( ! empty( $array1 ) && empty( $array2 ) ) ) return false;
 
-    if ( array_diff_assoc( $array1, $array2 ) === array_diff_assoc( $array2, $array1 ) )
-        return true;
-    else
-        return false;
+    // Check if arrays are too deep.
+    $array1_keys = array_keys($array1);
+    $array2_keys = array_keys($array2);
+
+    if ( is_array($array1[ $array1_keys[0] ]) || is_array($array2[ $array2_keys[0] ]) ) {
+        function array_recursive_diff($array1, $array2) {
+            $a_return = [];
+
+            foreach ($array1 as $m_key => $m_value) {
+                if (array_key_exists($m_key, $array2)) {
+                    if (is_array($m_value)) {
+                        $a_recursive_diff = array_recursive_diff($m_value, $array2[$m_key]);
+
+                        if (count($a_recursive_diff)) $a_return[$m_key] = $a_recursive_diff;
+
+                    } else {
+                        if ($m_value == $array2[$m_key]) continue;
+
+                        $a_return[$m_key] = $m_value;
+                    }
+                } else {
+                    $a_return[$m_key] = $m_value;
+                }
+            }
+
+            return $a_return;
+        }
+
+        return empty(array_recursive_diff($array1, $array2)) ? true : false;
+
+    } else {
+
+        if ( array_diff_assoc( $array1, $array2 ) === array_diff_assoc( $array2, $array1 ) )
+            return true;
+        else
+            return false;
+    }
 }
 
 /**
