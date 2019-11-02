@@ -2,6 +2,8 @@
 
 namespace JosephNC\PHPFuncs;
 
+use DateTime;
+
 /**
 * Returns the number of seconds/minutes/hour/days/weeks/months/year ago
 * 
@@ -534,4 +536,31 @@ function hex2rgb( $hex, $opacity = 1 )
     }
 
     return "rgba( $r, $g, $b, $opacity )";
+}
+
+/**
+ * Move an item in an array from one position to another
+ *
+ * @since 1.0.3
+ *
+ * @param array $arr The array to manipulate
+ * @param int|string $from The initial position or offset of the item to be moved
+ * @param int|string $to The new position for the item
+ * 
+ * @return array Empty array if no item is present or the new array after item has been moved.
+ */
+function array_move_item( array $arr, $from, $to )
+{
+    if ( empty( $arr ) ) return $arr;
+
+    $arr_k = array_keys( $arr );
+    $arr_v = array_values( $arr );
+
+    $index = array_search( $from, $arr_k );
+    $end = array_search( $to, $arr_k );
+
+    array_splice( $arr_k, $end, 0, array_splice( $arr_k, $index, 1 ) );
+    array_splice( $arr_v, $end, 0, array_splice( $arr_v, $index, 1 ) );
+
+    return array_combine( $arr_k, $arr_v );
 }
